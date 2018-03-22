@@ -6,7 +6,7 @@ import './greeter.less';
 class Greeter extends React.Component {
     render() {
         return (
-            <Link to="/hello" className="hello">Greeter aaaaa !!!</Link>
+            <Link to="/hello" className="hello">greeter ~</Link>
         )
     }
 }
