@@ -1,16 +1,12 @@
 
 import React from 'react';
 import { Route, Switch } from 'react-router-dom';
-import Greeter from '@/views/greeter';
-import Hello from '@/views/hello';
+import Index from '@/views/index';
 
 const routeList = [
    {
-        path: '/greeter',
-        component: Greeter
-    }, {
-        path: '/hello',
-        component: Hello
+        path: '/index',
+        component: Index
     }
 ];
 

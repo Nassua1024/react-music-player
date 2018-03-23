@@ -1,0 +1,226 @@
+
+// common css
+* {
+    margin: 0;
+    padding: 0;
+}
+a {
+    text-decoration: none;
+}
+a:active {
+    color: #FFF
+}
+a, input {
+    -webkit-tap-highlight-color: transparent;
+}
+html, body, #root {
+    height: 100%;
+}
+
+// 首页样式
+.index-wrap {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: url('../assets/images/music_bg.png') no-repeat center center;
+    background-size: cover;
+    header {
+        height: 80px;
+        box-sizing: border-box;
+        padding-left: 30px;
+        border-bottom: 1px solid #DDD;
+        a {
+            display: inline-block;
+            width: 50px;
+            height: 100%;
+            line-height: 80px;
+            vertical-align: middle;
+            font-size: 32px;
+            color: #FFF;
+        }
+        div {
+            display: inline-block;
+            width: 600px;
+            height: 100%;
+            margin: 0 auto;
+            text-align: center;
+            vertical-align: middle;
+            color: #FFF;
+            p {
+                margin-top: 3px;
+                font-size: 26px;
+            }
+        }
+    }
+    .play-wrap {
+        position: relative;
+        width: 100%;
+        overflow: hidden;
+        i {
+            position: absolute;
+            left: 50%;
+            top: -22px;
+            width: 44px;
+            height: 44px;
+            margin-left: -22px;
+            background: #f7f7f8;
+            border-radius: 50%;
+            z-index: 99;
+            span {
+                display: block;
+                width: 20px;
+                height: 20px;
+                margin: 12px auto 0;
+                background: #c8c8c7;
+                border-radius: 50%;
+            }
+        }
+        .needle {
+            position: absolute;
+            left: 50%;
+            top: -10px;
+            width: 168px;
+            height: 222px;
+            margin-left: -44px;
+            transform-origin: center top;
+            z-index: 9;
+            transform: rotate(-24deg);
+            animation-play-state: paused;
+        }
+        .disc {
+            position: relative;
+            width: 560px;
+            height: 560px;
+            margin: 100px auto 0;
+            background: url('../assets/images/disc.png') no-repeat center center;
+            background-size: cover;
+            animation: discRotate 30s infinite linear;
+            animation-play-state: paused;
+            img {
+                position: absolute;
+                left: 50%;
+                top: 50%;
+                width: 360px;
+                height: 360px;
+                margin-left: -180px;
+                margin-top: -180px;
+                border-radius: 50%;
+            }
+        }
+        .disc.play {
+            animation-play-state: running;
+        }
+        .needle.play {
+            animation: needlePlay 0.4s linear;
+            transform: rotate(0);
+        }
+        .needle.pause {
+            animation: needlePause 0.4s linear;
+            transform: rotate(-24deg);
+        }
+    }
+    .progress-wrap {
+        position: absolute;
+        left: 0;
+        bottom: 200px;
+        display: flex;
+        width: 100%;
+        height: 50px;
+        box-sizing: border-box;
+        padding: 0 40px;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 26px;
+        color: #FFF;
+        .time {
+            position: relative;
+            width: 480px;
+            height: 4px;
+            background: #856f68;
+            border-radius: 3px;
+            .current-time {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 0;
+                height: 100%;
+                background: #d33931;
+                border-radius: 3px;
+            }
+            i {
+                position: absolute;
+                left: -14px;
+                top: 50%;
+                width: 28px;
+                height: 28px;
+                margin-top: -14px;
+                background: #FFF;
+                border-radius: 50%;
+                em {
+                    display: block;
+                    width: 8px;
+                    height: 8px;
+                    background: #d33931;
+                    border-radius: 50%;
+                    margin: 10px auto 0;
+                }
+            }
+        }
+    }
+    .play-btn {
+        position: absolute;
+        left: 0;
+        display: flex;
+        bottom: 50px;
+        width: 100%;
+        height: 100px;
+        box-sizing: border-box;
+        padding: 0 10px;
+        justify-content: space-between;
+        align-items: center;
+        a:nth-child(1) img, a:nth-child(5) img {
+            width: 110px;
+        }
+        a:nth-child(2) img, a:nth-child(4) img {
+            width: 56px;
+        }
+        a:nth-child(3) {
+            width: 100px;
+            height: 100px;
+        }
+        a.pause {
+            background: url('../assets/images/play.png') no-repeat center center;
+            background-size: 100px;
+        }
+        a.play {
+            background: url('../assets/images/pause.png') no-repeat center center;
+            background-size: 100px;
+        } 
+    }
+    @keyframes discRotate {
+        0% {
+            transform: rotate(0);
+        }
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+    @keyframes needlePlay {
+        0% {
+            transform: rotate(-24deg);
+            
+        }
+        100% {
+            transform: rotate(0);
+        }
+    }
+    @keyframes needlePause {
+        0% {
+            transform: rotate(0);
+            
+        }
+        100% {
+            transform: rotate(-24deg);
+        }
+    }
+}

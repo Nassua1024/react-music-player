@@ -48,7 +48,7 @@ module.exports = {
                                     browsers: [ '>1%', 'last 4 versions', 'Firefox ESR', 'not ie < 9' ],
                                     flexbox: 'no-2009'
                                 }),
-                                // pxtorem({ rootValue: 100, propWhiteList: [] }) // px => rem
+                                pxtorem({ rootValue: 100, propWhiteList: [] })
                             ]
                         }
                     }
@@ -56,6 +56,9 @@ module.exports = {
             }, {
                 test: /(.jpg|.jpeg|.png|.gif)$/,
                 loader: 'url-loader?limit=8192&name=./src/assets/images/[hash:8].[ext]'
+            }, {
+                test : /\.(mp3)(\?.*)?$/,
+                loader : 'url-loader',
             }
         ]
     },
