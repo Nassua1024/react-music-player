@@ -10,31 +10,32 @@ class Index extends Component {
         super(props);
         this.state = {
             isPlaying: false, // 进入页面音乐正在是否播放 用于控制 needle 动画
-            music,
             duration: '--', // 歌曲总时间
             currentTime: '--', // 当前播放时间
-            progressWidth: 0, // 播放进度长度
+            progressRate: 0, // 播放进度长度
             isPlay: false, // 是否播放状态
         };
     }
 
     componentDidMount() {
-        // this.playMusic();
+        this.playMusic();
         this.timeUpdate();
     }
 
     // 拖拽播放进度
     handleMove(e) {
 
-        const offsetWidth = this.refs.progress.offsetWidth;
-        const clientX = this.refs.progress.offsetLeft; 
-        const pageX = e.changedTouches[0].pageX;
-        let currentTime = pageX - clientX;
+        const offsetWidth = this.refs.progress.offsetWidth; // 进度条长度
+        const barWidth = this.refs.bar.offsetWidth; // 小圆圈长度
+        const clientX = this.refs.progress.offsetLeft; // 进度条距离页面左边距离
+        const pageX = e.changedTouches[0].pageX; // 手指位置
+        let progressRate = (pageX - clientX) / offsetWidth * 100; // 当前播放进度百分比
+        const shouldMoveTotalRate = (1 - barWidth / offsetWidth) * 100; // 小圆圈最长可移动百分比
 
-        if(currentTime <= 0) currentTime = 0;
-        if(currentTime >= offsetWidth) currentTime = offsetWidth;
+        if(progressRate <= 0) progressRate = 0;
+        if(progressRate >= shouldMoveTotalRate) progressRate = shouldMoveTotalRate;
 
-        this.setState({ currentTime });
+        this.setState({ progressRate });
     }
 
     // 播放音乐
@@ -57,15 +58,15 @@ class Index extends Component {
             
             const duration = new Date(parseInt(_this.duration) * 1000).Format('mm:ss');
             const currentTime = new Date(parseInt(_this.currentTime *  1000)).Format('mm:ss');
-            const progressWidth = _this.currentTime/_this.duration * 100;
+            const progressRate = _this.currentTime/_this.duration * 100;
 
-            this.setState({ duration, currentTime, progressWidth });
+            this.setState({ duration, currentTime, progressRate });
         });
     }
 
     render() {
 
-        const { initPage, music, duration, currentTime, progressWidth, isPlay } = this.state;
+        const { initPage, duration, currentTime, progressRate, isPlay } = this.state;
 
         return (
             <div className="index-wrap">
@@ -87,8 +88,8 @@ class Index extends Component {
                 <div className="progress-wrap">
                     <span>{ currentTime }</span>
                     <div className="time" ref="progress">
-                        <div className="current-time" style={ { 'width': `${progressWidth}%` } }></div>
-                        <i ref="bar" onTouchMove={ e => this.handleMove(e) } style={{ 'left': `${progressWidth}%`}}><em></em></i>
+                        <div className="current-time" style={ { 'width': `${progressRate}%` } }></div>
+                        <i ref="bar" onTouchMove={ e => this.handleMove(e) } style={{ 'left': `${progressRate}%`}}><em></em></i>
                     </div>
                     <span>{ duration }</span>
                 </div>
