@@ -1,7 +1,7 @@
 
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import music from '@/assets/json/music.json';
+import music from '@/assets/music/music';
 import '@/utils/base';
 import './index.less';
 
@@ -13,7 +13,8 @@ class Index extends Component {
             duration: 0, // 歌曲总时间
             currentTime: 0, // 当前播放时间
             isPlay: false, // 是否播放状态
-            isDrag: false
+            isDrag: false, // 是否拖拽进度条
+            iNow: 0 // 当前播放歌曲的时间
         };
     }
 
@@ -31,6 +32,17 @@ class Index extends Component {
             isPlay: !isPlay, 
             isPlaying: true
         }, !isPlay ? () => this.refs.audio.play() : () => this.refs.audio.pause() );
+    }
+
+    // 上一首
+    prev() {
+
+        let { iNow } = this.state;
+
+        if(iNow < 0) iNow = music.length - 1;
+
+        iNow --;
+        this.setState({ iNow });
     }
 
     // 获取播放时间 播放进度
@@ -83,23 +95,27 @@ class Index extends Component {
 
     render() {
 
-        const { isPlaying, duration, currentTime, progressRate, isPlay } = this.state;
+        const { isPlaying, duration, currentTime, progressRate, isPlay, iNow } = this.state;
 
         return (
             <div className="index-wrap">
-                <audio ref="audio" id="audio" src={ music[0].src } />
+                <audio ref="audio" id="audio" src={ music[iNow].src } />
                 <header>
                     <Link to="">{ '<' }</Link>
                     <div>
-                        <p>{ music[0].name }</p>
-                        <span>{ music[0].singer }</span>
+                        <p>{ music[iNow].name }</p>
+                        <span>{ music[iNow].singer }</span>
                     </div>
                 </header>
                 <div className="play-wrap">
                     <i><span></span></i>
-                    <img className={ isPlay ? 'play needle' : isPlaying ? 'pause needle' : 'needle' } src={ require('@/assets/images/needle.png') } alt="" />
+                    <img 
+                        className={ isPlay ? 'play needle' : isPlaying ? 'pause needle' : 'needle' } 
+                        src={ require('@/assets/images/needle.png') } 
+                        alt="" 
+                    />
                     <div className={ isPlay ? 'play disc': 'disc' }>
-                        <img src={ require('@/assets/images/878431574282626913.jpg') } alt="" />
+                        <img src={ music[iNow].img } alt="" />
                     </div>
                 </div>
                 <div className="progress-wrap">
@@ -121,7 +137,10 @@ class Index extends Component {
                     <a href="javascript: ">
                         <img src={ require("@/assets/images/seq.png") } alt="" />
                     </a>
-                    <a href="javascript: ">
+                    <a 
+                        href="javascript: " 
+                        onClick={ () => this.prev() }
+                    >
                         <img src={ require("@/assets/images/pre_l.png") } alt="" />
                     </a>
                     <a 
@@ -129,7 +148,10 @@ class Index extends Component {
                         className={ isPlay ? 'play' : 'pause' } 
                         onClick={ () => this.playMusic() } 
                     />
-                    <a href="javascript: ">
+                    <a 
+                        href="javascript: " 
+                        onClick={ () => this.next() }
+                    >
                         <img src={ require("@/assets/images/pre_r.png") } alt="" />
                     </a>
                     <a href="javascript: ">
