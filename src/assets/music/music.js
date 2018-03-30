@@ -4,32 +4,22 @@ const music = [
 		"name": "心愿", 
 		"singer": "四个女孩",
 		"img": require("@/assets/images/878431574282626913.jpg"),
-		"src": "http://m10.music.126.net/20180323170228/b88e6d2c484453b809322f533838422b/ymusic/6506/c52f/86ed/ae406fe2da91820f88d5953556c936c3.mp3" 
+		"src": 'http://m10.music.126.net/20180329143713/5f29678de5af2dfe44a11cd9a817f06b/ymusic/6506/c52f/86ed/ae406fe2da91820f88d5953556c936c3.mp3' 
 	}, {
-		"name": "那就这样吧",
-		"singer": "动力火车",
-		"img": require("@/assets/images/20180327105659.jpg"),
-		"src": "http://m10.music.126.net/20180327114859/a0db60659cb00d80a27f367a384e0f7e/ymusic/c684/e938/f44b/1391626b13b687731471b363c8c98912.mp3"
+		"name": "朋友别哭",
+		"singer": "孙露",
+		"img": require("@/assets/images/5866994045829340.jpg"),
+		"src": "http://m10.music.126.net/20180329144017/d7fb6ed4b3b122c7b731b7dad92765ec/ymusic/a686/6a6b/8add/bbb4b69e10c1439c0270ced7c048ba91.mp3"
 	}, {
-		"name": "爱情抗体",
-		"singer": "许慧欣",
-		"img": require("@/assets/images/20180327105626.jpg"),
-		"src": "http://m10.music.126.net/20180327114722/cb80820e004186f412c77e53cf168236/ymusic/c684/e938/f44b/1391626b13b687731471b363c8c98912.mp3"
+		"name": "平凡之路",
+		"singer": "朴树",
+		"img": require("@/assets/images/18885211718782327.jpg"),
+		"src": "http://m10.music.126.net/20180329144225/f65394b72644cb93f2c1b654ca51d376/ymusic/5dde/f2d3/3dba/0a0914dcd1585247b58938a3a7afd925.mp3"
 	}, {
-		"name": "不能和你分手",
-		"singer": "赵薇",
-		"img": require("@/assets/images/20180327111219.jpg"),
-		"src": "http://m10.music.126.net/20180327114920/70de7a9e7bf8cbbf1670ae44c0381b61/ymusic/c684/e938/f44b/1391626b13b687731471b363c8c98912.mp3"
-	}, {
-		"name": "海海人生",
-		"singer": "陈盈洁",
-		"img": require("@/assets/images/20180327105716.jpg"),
-		"src": "http://m10.music.126.net/20180327114757/8329263b48a8230a1c80be080b2bfb4d/ymusic/c684/e938/f44b/1391626b13b687731471b363c8c98912.mp3"
-	}, {
-		"name": "心要让你听见",
-		"singer": "邰正宵",
-		"img": require("@/assets/images/20180327105709.jpg"),
-		"src": "http://m10.music.126.net/20180327114830/9b48123952746b2f10c12b90e6825903/ymusic/c684/e938/f44b/1391626b13b687731471b363c8c98912.mp3"
+		"name": "偷偷想你",
+		"singer": "许秋怡",
+		"img": require("@/assets/images/26388279081545.jpg"),
+		"src": "http://m10.music.126.net/20180329144255/4fc76275c9eb55b3209594e20604564d/ymusic/7686/ec95/2b68/7e7d18082d9e01870bd0ce2cb892a1b4.mp3"
 	}
 ]
 

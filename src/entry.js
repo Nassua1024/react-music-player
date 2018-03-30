@@ -4,7 +4,7 @@ import { render } from 'react-dom';
 import { HashRouter as Router } from 'react-router-dom';
 import { AppContainer } from 'react-hot-loader';
 import routes from '@/routers/router';
-import './flexible';
+import '@/utils/flexible';
 
 render (
     <AppContainer>

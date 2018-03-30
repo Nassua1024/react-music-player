@@ -9,12 +9,13 @@ class Index extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            isPlaying: false, // 进入页面音乐正在是否播放 用于控制 needle 动画
             duration: 0, // 歌曲总时间
             currentTime: 0, // 当前播放时间
             isPlay: false, // 是否播放状态
             isDrag: false, // 是否拖拽进度条
-            iNow: 0 // 当前播放歌曲的时间
+            iNow: 0, // 当前播放歌曲的下标
+            clentX: 0, // 背景头像水平偏移量
+            needleClazz: 'needle' // 用于控制 needle 动画 
         };
     }
 
@@ -30,21 +31,57 @@ class Index extends Component {
         
         this.setState({ 
             isPlay: !isPlay, 
-            isPlaying: true
+            needleClazz: !isPlay ? 'play needle': 'pause needle'
         }, !isPlay ? () => this.refs.audio.play() : () => this.refs.audio.pause() );
     }
 
     // 上一首
-    prev() {
+    prevMusic() {
 
-        let { iNow } = this.state;
-
-        if(iNow < 0) iNow = music.length - 1;
+        let { iNow, clentX } = this.state;
 
         iNow --;
-        this.setState({ iNow });
+        clentX += 560 / 100;
+        
+        if(iNow < 0) 
+            iNow = music.length - 1;
+        
+        this.setState({ 
+            iNow, 
+            clentX,
+            isPlay: true,
+            needleClazz: isPlay ? 'cut needle' : 'play needle'
+        }, () => setClazz() );
     }
 
+    // 下一首
+    nextMusic() {
+
+        let { iNow, clentX } = this.state;
+        const { isPlay } = this.state; 
+        
+        iNow ++;
+        clentX -= 560 / 100;
+        
+        if(iNow > music.length - 1)
+            iNow = 0;
+
+        this.setState({ 
+            iNow, 
+            clentX,
+            isPlay: true,
+            needleClazz: isPlay ? 'cut needle' : 'play needle'
+        }, () => this.setClazz() );
+    }
+
+    // needle 动画完成后重新 needle 的样式
+    // 为了解决在连续播放状态下切歌 needle 动画不生效的问题
+    setClazz() {
+        setTimeout(() => {
+            this.setState({ needleClazz: 'play needle'}, () => this.refs.audio.play() )
+        }, 400)
+    }
+    
     // 获取播放时间 播放进度
     timeUpdate() {
         
@@ -54,10 +91,13 @@ class Index extends Component {
 
             if(!this.state.isDrag) {
                
-                const duration = parseInt(_this.duration) * 1000;
+                const duration = Number.isNaN(_this.duration) ? 0 : parseInt(_this.duration) * 1000;
                 const progressRate = _this.currentTime/_this.duration * 100;
                 const currentTime = parseInt(_this.currentTime *  1000);
-                   
+
+                if(duration != 0 && currentTime >= duration)
+                    this.nextMusic();
+
                 this.setState({ duration, currentTime, progressRate });
             }
         });
@@ -95,7 +135,7 @@ class Index extends Component {
 
     render() {
 
-        const { isPlaying, duration, currentTime, progressRate, isPlay, iNow } = this.state;
+        const { duration, currentTime, progressRate, isPlay, iNow, clentX, needleClazz } = this.state;
 
         return (
             <div className="index-wrap">
@@ -107,17 +147,29 @@ class Index extends Component {
                         <span>{ music[iNow].singer }</span>
                     </div>
                 </header>
+
+                {/* 音乐背景 */}
                 <div className="play-wrap">
-                    <i><span></span></i>
+                    <i />
                     <img 
-                        className={ isPlay ? 'play needle' : isPlaying ? 'pause needle' : 'needle' } 
+                        className={ needleClazz }
                         src={ require('@/assets/images/needle.png') } 
                         alt="" 
                     />
-                    <div className={ isPlay ? 'play disc': 'disc' }>
-                        <img src={ music[iNow].img } alt="" />
+                    <div className="disc-wrap">
+                        <div className="avator-wrap" style={{ 'transform': `translateX(${clentX}rem)` }}>
+                            {
+                                music.map((item, index) => (
+                                    <div key={ index } className={ (isPlay && iNow == index) ? 'play disc': 'disc' }>
+                                        <img src={ item.img } alt="" />
+                                    </div>
+                                ))
+                            }
+                        </div>
                     </div>
                 </div>
+
+                {/* 进度条 */}
                 <div className="progress-wrap">
                     <span>{ new Date(currentTime).Format('mm:ss') }</span>
                     <div className="time" ref="progress">
@@ -127,19 +179,19 @@ class Index extends Component {
                             style={{ 'left': `${progressRate}%`}}
                             onTouchMove={ e => this.handleMove(e) } 
                             onTouchEnd={ () => this.handleEnd() }                            
-                        >
-                            <em></em>
-                        </i>
+                        />
                     </div>
                     <span>{ new Date(duration).Format('mm:ss') }</span>
                 </div>
+
+                {/* 底部按钮 */}
                 <div className="play-btn">
                     <a href="javascript: ">
                         <img src={ require("@/assets/images/seq.png") } alt="" />
                     </a>
                     <a 
                         href="javascript: " 
-                        onClick={ () => this.prev() }
+                        onClick={ () => this.prevMusic() }
                     >
                         <img src={ require("@/assets/images/pre_l.png") } alt="" />
                     </a>
@@ -150,7 +202,7 @@ class Index extends Component {
                     />
                     <a 
                         href="javascript: " 
-                        onClick={ () => this.next() }
+                        onClick={ () => this.nextMusic() }
                     >
                         <img src={ require("@/assets/images/pre_r.png") } alt="" />
                     </a>
