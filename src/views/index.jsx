@@ -38,7 +38,7 @@ class Index extends Component {
     // 上一首
     prevMusic() {
 
-        let { iNow, clentX } = this.state;
+        let { iNow, clentX, isPlay } = this.state;
 
         iNow --;
         clentX += 560 / 100;
@@ -51,7 +51,7 @@ class Index extends Component {
             clentX,
             isPlay: true,
             needleClazz: isPlay ? 'cut needle' : 'play needle'
-        }, () => setClazz() );
+        }, () => this.setClazz() );
     }
 
     // 下一首
