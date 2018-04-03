@@ -14,14 +14,46 @@ class Index extends Component {
             isPlay: false, // 是否播放状态
             isDrag: false, // 是否拖拽进度条
             iNow: 0, // 当前播放歌曲的下标
-            clentX: 0, // 背景头像水平偏移量
-            needleClazz: 'needle' // 用于控制 needle 动画 
+            needleClazz: 'needle', // 用于控制 needle 动画 
+            lrcList: [], // 歌词
         };
+    }
+
+    componentWillMount() {
+        this.initLrc();
     }
 
     componentDidMount() {
         this.playMusic();
         this.timeUpdate();
+    }
+
+    // 初始化歌词
+    initLrc() {
+
+        const { iNow } = this.state;
+        const lrc = music[iNow].lrc.split('[');
+        let lrcList = [];
+
+        lrc.shift();
+
+        for(let i=0; i<lrc.length; i++) {
+           
+            const arr = lrc[i].split(']');
+            const dataItem = {};
+            
+            if(arr[0]) {
+                const time = arr[0].split('.');
+                const timer = time[0].split(':');
+                const sec = timer[0] * 60 + timer[1] * 1;
+                dataItem.time = sec;
+            }
+
+            dataItem.lrc = arr[1].replace(/[\r\n]/g, '');
+            lrcList.push(Object.assign({}, dataItem));
+        }
+
+        this.setState({ lrcList });
     }
 
     // 播放音乐
@@ -38,17 +70,26 @@ class Index extends Component {
     // 上一首
     prevMusic() {
 
-        let { iNow, clentX, isPlay } = this.state;
+        let { iNow } = this.state;
+        const { isPlay } = this.state;
 
         iNow --;
-        clentX += 560 / 100;
-        
-        if(iNow < 0) 
+
+        if(iNow < 0) {
+            
             iNow = music.length - 1;
+            document.getElementById('sliders').style.transitionDuration = '0s';
+            document.getElementById('sliders').style.transform = `translateX(${-iNow * 7.5}rem)`;
+
+            setTimeout(() => {
+                iNow --;
+                document.getElementById('sliders').style.transitionDuration = '0.6s'; 
+                this.setState({ iNow });
+            }, 10);
+        }
         
         this.setState({ 
             iNow, 
-            clentX,
             isPlay: true,
             needleClazz: isPlay ? 'cut needle' : 'play needle'
         }, () => this.setClazz() );
@@ -57,18 +98,26 @@ class Index extends Component {
     // 下一首
     nextMusic() {
 
-        let { iNow, clentX } = this.state;
+        let { iNow } = this.state;
         const { isPlay } = this.state; 
         
         iNow ++;
-        clentX -= 560 / 100;
-        
-        if(iNow > music.length - 1)
-            iNow = 0;
 
+        if(iNow > music.length - 1) {
+            
+            iNow = 0;
+            document.getElementById('sliders').style.transitionDuration = '0s';
+            document.getElementById('sliders').style.transform = 'translateX(0)';
+            
+            setTimeout(() => {
+                iNow ++;
+                document.getElementById('sliders').style.transitionDuration = '0.6s'; 
+                this.setState({ iNow });
+            }, 10);
+        }
+        
         this.setState({ 
             iNow, 
-            clentX,
             isPlay: true,
             needleClazz: isPlay ? 'cut needle' : 'play needle'
         }, () => this.setClazz() );
@@ -77,9 +126,10 @@ class Index extends Component {
     // needle 动画完成后重新 needle 的样式
     // 为了解决在连续播放状态下切歌 needle 动画不生效的问题
     setClazz() {
+        this.initLrc();
         setTimeout(() => {
             this.setState({ needleClazz: 'play needle'}, () => this.refs.audio.play() )
-        }, 400)
+        }, 300)
     }
     
     // 获取播放时间 播放进度
@@ -90,11 +140,27 @@ class Index extends Component {
         this.refs.audio.addEventListener('timeupdate', () => {
 
             if(!this.state.isDrag) {
-               
+                
+                const { lrcList } = this.state;
                 const duration = Number.isNaN(_this.duration) ? 0 : parseInt(_this.duration) * 1000;
                 const progressRate = _this.currentTime/_this.duration * 100;
                 const currentTime = parseInt(_this.currentTime *  1000);
+                const oLi = document.getElementsByTagName('li');
 
+                if(document.getElementById(parseInt(_this.currentTime))) {
+                    
+                    for(let i=0; i<oLi.length; i++) {
+                        oLi[i].style.cssText = 'color:#FFF;font-size:0.26rem';
+                        if(parseInt(_this.currentTime) == lrcList[i].time && i > 2) {
+                            const y = (2 - i) * 0.52 + 'rem';
+                            document.getElementById('lrc').style.transform = `translateY(${y})`;
+                            document.getElementById('lrc').style.transitionDuration = '0.8s';
+                        }
+                    }
+
+                    document.getElementById(parseInt(_this.currentTime)).style.cssText = 'color:red;font-size:0.28rem';
+                }                    
+                
                 if(duration != 0 && currentTime >= duration)
                     this.nextMusic();
 
@@ -135,7 +201,7 @@ class Index extends Component {
 
     render() {
 
-        const { duration, currentTime, progressRate, isPlay, iNow, clentX, needleClazz } = this.state;
+        const { duration, currentTime, progressRate, isPlay, iNow, needleClazz, lrcList } = this.state;
 
         return (
             <div className="index-wrap">
@@ -157,7 +223,7 @@ class Index extends Component {
                         alt="" 
                     />
                     <div className="disc-wrap">
-                        <div className="avator-wrap" style={{ 'transform': `translateX(${clentX}rem)` }}>
+                        <div className="avator-wrap" id="sliders" style={{ 'transform': `translateX(${-iNow * 7.5}rem)` }}>
                             {
                                 music.map((item, index) => (
                                     <div key={ index } className={ (isPlay && iNow == index) ? 'play disc': 'disc' }>
@@ -167,6 +233,17 @@ class Index extends Component {
                             }
                         </div>
                     </div>
+                </div>
+
+                {/* 歌词 */}
+                <div className="lrc" >
+                    <ul id="lrc">
+                        { 
+                            lrcList.map((item, index) => (
+                                <li id={ String(item.time) } key={ index }>{ item.lrc }</li>
+                            ))
+                        }
+                    </ul>
                 </div>
 
                 {/* 进度条 */}
